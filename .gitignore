@@ -1,0 +1,15 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# Build / deps
+node_modules/
+*.log
+
+# Local env
+.env
+
+# Optional packaged artifact
+*.skill
+*.zip

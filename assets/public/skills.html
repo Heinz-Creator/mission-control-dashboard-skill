@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Skills – Mission Control</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .page{max-width:980px;margin:0 auto;padding:18px 14px 70px 14px;}
+    .card{border:1px solid var(--border);background:rgba(17,26,51,.55);border-radius:14px;padding:14px 14px;margin:12px 0;}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+    .row > *{flex:1;min-width:240px;}
+    .k{color:var(--muted);font-size:12px;margin-bottom:6px;}
+    .h{font-weight:800;font-size:18px;margin:0 0 8px 0;}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;white-space:pre-wrap;}
+    a{color:#9ae6ff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .pill{display:inline-block;font-size:12px;padding:3px 8px;border-radius:999px;border:1px solid var(--border);background:rgba(0,0,0,.22);color:var(--muted)}
+    .list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+    .item{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;border:1px solid var(--border);border-radius:12px;padding:10px 10px;background:rgba(15,23,48,.18)}
+    .item strong{font-size:14px}
+    .item small{color:var(--muted)}
+    .btnlink{display:inline-block}
+    .top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Mission Control</div>
+    <div class="status">Skills</div>
+    <div class="controls">
+      <a class="btn small btnlink" href="/">← Zurück</a>
+      <a class="btn small btnlink" href="https://clawhub.com" target="_blank" rel="noreferrer">ClawHub öffnen</a>
+      <a class="btn small btnlink" href="https://docs.openclaw.ai" target="_blank" rel="noreferrer">OpenClaw Docs</a>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="card">
+      <div class="top-actions">
+        <div>
+          <div class="k">Was ist ein Skill?</div>
+          <div class="h">Skills = Werkzeugkisten für OpenClaw</div>
+          <div style="color:var(--muted);font-size:13px;line-height:1.35">
+            Skills liefern zusätzliche Funktionen (z.B. Weather, Coding-Agent, Home Assistant, MCP-Tools).
+            Du kannst Skills installieren/aktualisieren und dann im Chat über <span class="pill">/skill name:</span> nutzen.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="card">
+        <div class="k">Schnellstart</div>
+        <div class="h">Im Chat benutzen</div>
+        <div class="mono">/skill weather: Berlin heute
+/skill coding-agent: mach ein kleines Script
+/skill mcporter: list</div>
+      </div>
+      <div class="card">
+        <div class="k">Install/Update</div>
+        <div class="h">Über ClawHub</div>
+        <div style="color:var(--muted);font-size:13px;line-height:1.35">
+          Die meisten Skills findest du auf <a href="https://clawhub.com" target="_blank" rel="noreferrer">clawhub.com</a>.
+          Du sagst mir einfach „Installiere Skill X“ und ich mach’s (oder ich zeige dir die Schritte).
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="k">Installierte Skills (live)</div>
+      <div class="h">Auf diesem System</div>
+      <div id="skillsList" class="list"><div class="item"><small>Lade Skills…</small></div></div>
+    </div>
+
+    <div class="card">
+      <div class="k">Tipps</div>
+      <div class="h">So bleibt’s sauber</div>
+      <ul style="margin:8px 0 0 18px;color:var(--muted);line-height:1.45">
+        <li>Nutze bevorzugt Skills mit ✅ (eligible) – die sind direkt nutzbar.</li>
+        <li>Wenn die Liste leer ist: Hard-Reload (Strg+F5) – Cache ist der häufigste Grund.</li>
+        <li>Updates: In Mission Control unten links siehst du die OpenClaw-Version + Update-Status.</li>
+      </ul>
+    </div>
+  </main>
+
+<script>
+async function loadSkills(){
+  const box = document.getElementById('skillsList');
+  try{
+    const r = await fetch('/api/skills');
+    const d = await r.json();
+    const skills = (d && d.skills) ? d.skills : [];
+    box.innerHTML = '';
+    if(!skills.length){
+      box.innerHTML = '<div class="item"><small>Keine Skills gefunden.</small></div>';
+      return;
+    }
+    for(const s of skills){
+      const el = document.createElement('div');
+      el.className = 'item';
+      const prefix = s.disabled ? '⛔' : (s.eligible ? '✅' : '⚠️');
+      const em = s.emoji ? (s.emoji + ' ') : '';
+      el.innerHTML = `
+        <div>
+          <strong>${prefix} ${em}${s.name}</strong><div><small>${s.source || ''}</small></div>
+        </div>
+        <div>
+          <small>Prompt:</small>
+          <div class="mono">/skill ${s.name}: …</div>
+        </div>`;
+      box.appendChild(el);
+    }
+  } catch(e){
+    box.innerHTML = '<div class="item"><small>Fehler beim Laden der Skills.</small></div>';
+  }
+}
+loadSkills();
+</script>
+</body>
+</html>

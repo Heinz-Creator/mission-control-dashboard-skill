@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mission Control</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Mission Control</div>
+    <div id="statusText" class="status">Idle</div>
+    <div class="controls">
+      <span id="connDot" class="conn-dot" title="Connection status"></span>
+
+      <button id="toggleProjectsBtn" class="btn small">Projekte</button>
+      <button id="toggleEditorBtn" class="btn small">Editor</button>
+
+      <label class="lbl">Session</label>
+      <select id="sessionSelect"></select>
+      <button id="newSessionBtn" class="btn small" type="button">Neu</button>
+      <button id="exportSessionBtn" class="btn small" type="button">Export</button>
+
+      <label class="lbl">Skills</label>
+      <select id="skillSelect"></select>
+      <a class="btn small btnlink" href="/skills.html" title="Skills entdecken / Anleitung">Skills↗</a>
+
+      <label class="lbl">Modell</label>
+      <select id="modelSelect"></select>
+
+      <button id="gwRestartBtn" class="btn small" title="OpenClaw Gateway Service neu starten">Gateway Restart</button>
+      <button id="ocUpdateBtn" class="btn small" title="OpenClaw updaten und Gateway neu starten">Update+Restart</button>
+    </div>
+  </header>
+
+  <main class="layout" id="layout">
+    <aside class="sidebar" id="paneProjects">
+      <div class="panel-title">Projekte</div>
+      <div class="proj-actions">
+        <button id="newFolderBtn" class="btn small">+ Ordner</button>
+        <button id="newFileBtn" class="btn small">+ Datei</button>
+        <button id="deleteBtn" class="btn small danger">Löschen</button>
+        <label class="btn small">
+          Upload
+          <input id="coverUpload" type="file" style="display:none" />
+        </label>
+        <button id="refreshTreeBtn" class="btn small">Baum aktualisieren</button>
+      </div>
+
+      <div id="tree" class="tree"></div>
+    </aside>
+
+    <div class="splitter" id="splitterLeft" title="Drag to resize"></div>
+
+    <section class="center" id="paneChat">
+      <div class="panel-title">Chat</div>
+      <div id="chatLog" class="chat-log"></div>
+
+      <div id="agentsRoomInline" class="agents-room-inline" title="Agents status">
+        <div class="agents-room-bar" id="agentsRoomBar">
+          <div class="agents-room-label">Agents</div>
+          <div class="agents-room-controls" id="agentsRoomControls" style="display:none">
+            <button id="calibrateBtn" class="btn small" type="button">Overlay einstellen</button>
+            <button id="calibratePrevBtn" class="btn small" type="button" style="display:none">◀</button>
+            <button id="calibrateNextBtn" class="btn small" type="button" style="display:none">▶</button>
+            <button id="calibrateZoomBtn" class="btn small" type="button" style="display:none">Zoom 2×</button>
+            <button id="calibrateSaveBtn" class="btn small" type="button" style="display:none">Speichern</button>
+          </div>
+        </div>
+        <canvas id="agentsRoom2d"></canvas>
+      </div>
+
+      <form id="chatForm" class="chat-form">
+        <button id="micBtn" class="btn" type="button" title="Spracheingabe">🎙️</button>
+        <input id="chatInput" class="chat-input" placeholder="Schreib was..." autocomplete="off" />
+        <button id="sendBtn" class="btn" type="submit">Senden</button>
+      </form>
+    </section>
+
+    <div class="splitter" id="splitterRight" title="Drag to resize"></div>
+
+    <section class="viewer" id="paneEditor">
+      <div class="panel-title">Editor</div>
+      <div id="filePath" class="file-path">(no file selected)</div>
+      <div class="editor-actions">
+        <button id="saveBtn" class="btn small">Save</button>
+      </div>
+      <textarea id="fileContent" class="file-content editor" spellcheck="false"></textarea>
+    </section>
+  </main>
+
+  <div id="sysInfo" class="sys-info" title="OpenClaw Status"></div>
+
+  <script src="/agents-room-2d.js?v=14"></script>
+  <script src="/app.js?v=12"></script>
+</body>
+</html>
